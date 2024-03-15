@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Preços e Compra de Produtos</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url('compras.jpg'); 
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #container {
+        max-width: 400px;
+        padding: 20px;
+        border: 1px solid #868484;
+        border-radius: 5px;
+        background-color: beige;
+    }
+    button {
+        margin-top: 10px;
+        padding: 8px 16px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <h2>Consulta de Preços e Compra de Produtos</h2>
+    <label for="produtoInput">Código ou Nome do Produto:</label>
+    <input type="text" id="produtoInput">
+    <button onclick="consultarPreco()">Consultar Valor</button>
+    <button onclick="comprarProduto()">Comprar Produto</button>
+    <button onclick="calcularTotal()">Calcular Total</button>
+    <button onclick="limparCarrinho()">Limpar Carrinho</button>
+    <p id="preco-produto"></p>
+    <p id="carrinho-info"></p>
+    <p id="total-carrinho"></p>
+</div>
+
+<script>
+   
+    let carrinho = [];
+
+    
+    function atualizarCarrinhoInfo() {
+        const carrinhoInfo = document.getElementById('carrinho-info');
+        const totalCarrinho = document.getElementById('total-carrinho');
+        const qtdItens = carrinho.length;
+        let total = 0;
+        carrinho.forEach(produto => {
+            total += produto.preco;
+        });
+        carrinhoInfo.textContent = `Produtos no Carrinho: ${qtdItens}`;
+        totalCarrinho.textContent = `Total: R$ ${total.toFixed(2)}`;
+    }
+
+    
+    function consultarPreco() {
+        const produtoInput = document.getElementById('produtoInput').value.toLowerCase();
+        
+        const precos = {
+            "feijão": 5.99,
+            "arroz": 23.99,
+            "macarrao": 10.99,
+            "sabonete": 2.99,
+            "carne": 29.99,
+        };
+        const preco = precos[produtoInput];
+        if (preco) {
+            document.getElementById('preco-produto').innerText = `O valor do produto é: R$ ${preco.toFixed(2)}`;
+        } else {
+            document.getElementById('preco-produto').innerText = 'Produto não encontrado';
+        }
+    }
+
+    function comprarProduto() {
+        const produtoInput = document.getElementById('produtoInput').value.toLowerCase();
+        const precos = {
+            "feijão": 5.99,
+            "arroz": 23.99,
+            "macarrao": 10.99,
+            "sabonete": 2.99,
+            "carne": 29.99,
+        };
+        const preco = precos[produtoInput];
+        if (preco) {
+            carrinho.push({nome: produtoInput, preco: preco});
+            atualizarCarrinhoInfo();
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        } else {
+            alert('Produto não encontrado');
+        }
+    }
+
+    
+    function calcularTotal() {
+        let total = 0;
+        carrinho.forEach(produto => {
+            total += produto.preco;
+        });
+        if (total > 0) {
+            document.getElementById('total-carrinho').innerText = `Total do Carrinho: R$ ${total.toFixed(2)}`;
+        } else {
+            document.getElementById('total-carrinho').innerText = 'Carrinho vazio';
+        }
+    }
+
+    
+    function limparCarrinho() {
+        carrinho = [];
+        atualizarCarrinhoInfo();
+        localStorage.removeItem('carrinho');
+    }
+
+    
+    window.onload = function() {
+        const carrinhoLocalStorage = localStorage.getItem('carrinho');
+        if (carrinhoLocalStorage) {
+            carrinho = JSON.parse(carrinhoLocalStorage);
+            atualizarCarrinhoInfo();
+        }
+    }
+</script>
+</body>
+</html>
